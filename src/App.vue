@@ -29,4 +29,8 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.zh {
+    font-family: 'Noto Sans TC', sans-serif;
+}
 </style>
