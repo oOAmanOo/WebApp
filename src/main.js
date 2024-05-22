@@ -5,7 +5,7 @@ import 'bootswatch/dist/sketchy/bootstrap.css'
 import router from './router/index.js'
 
 
-createApp(App).use(router)
+createApp(App)
     .use(router)
     .mount('#app')
 
