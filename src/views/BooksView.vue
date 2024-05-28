@@ -12,7 +12,7 @@
                     <h5 class="zh inline-block mb-2">價格: {{bookData['price']}} /元</h5>
                     <span style="font-size: 15px" :class="'badge rounded-pill inline-block mb-2 mx-5 '+(bookData['status'] == 'Available'?'bg-success':'bg-danger')">{{ bookData['status'] }}</span>
                 </div>
-                <button type="button" class="btn bg-warning mt-2 text-white">Add to Cart</button>
+                <button type="button" class="btn bg-warning mt-2 text-white" @click="addToCart">Add to Cart</button>
             </div>
         </div>
         <div class="container card border-dark mb-3" :style="'max-width: '+commentWidth+'px' ">
@@ -35,6 +35,8 @@ import { ref } from 'vue'
 
 // read test_bookData.json
 import bookData_json from '../assets/test_bookData.json'
+import Swal from "sweetalert2";
+import axios from "axios";
 const imgHeight = ref(window.innerHeight -120)
 const imgWidth = ref(window.innerWidth/12*3.5)
 const commentWidth = ref(window.innerWidth*0.8)
@@ -47,6 +49,26 @@ if (bookData['amount'] > 0) {
 const commentData = JSON.parse(JSON.stringify(bookData_json))
 const rating = 3
 const stars = [1,2,3,4,5]
+
+const addToCart = () => {
+    axios.post('http://localhost:3000/cart', {
+        book_id: bookData['id'],
+        book_name: bookData['name'],
+        book_price: bookData['price'],
+        book_amount: 1
+    }).then( (response) => Swal.fire({
+        icon: 'success',
+        title: 'Add to Cart Successfully',
+        showConfirmButton: false,
+        timer: 1500
+    })).catch( (error) => Swal.fire({
+        icon: 'error',
+        title: 'Fail to Add to Cart',
+        showConfirmButton: false,
+        timer: 1500
+    }));
+    
+}
 </script>
 
 <style scoped>
