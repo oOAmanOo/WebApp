@@ -1,13 +1,16 @@
 <template>
   <div class="login">
-    <h1>Login</h1>
+    <h1>Log in</h1>
     <form @submit.prevent="submitForm">
       <label for="username">Username:</label>
       <input type="text" id="username" v-model="username" required>
       <label for="password">Password:</label>
       <input type="password" id="password" v-model="password" required>
-      <button type="submit">Login</button>
-      <router-link to="/signup">Sign Up</router-link>
+      <button type="submit">Log in</button>
+      <div class="signup-prompt">
+        <span>Don’t have an account?</span>
+        <router-link to="/signup">Sign Up</router-link>
+      </div>
     </form>
   </div>
 </template>
@@ -34,9 +37,9 @@ export default {
       } else{
         //TODO: 這裡應該要呼叫API來驗證帳號密碼
         alert('Login success');
-        //hashpassword = hashPassword(this.password)
-        // storeUser(this.username, hashpassword)
-        this.storeUser(this.username, this.password)
+        const hashP = this.hashPassword(this.password)
+        this.storeUser(this.username, hashP)
+        //this.storeUser(this.username, this.password)
       }
       // console.log('Username:', this.username);
       // console.log('Password:', this.password);
@@ -49,20 +52,24 @@ export default {
       console.log(this.$cookies.get('user').password);
     },
 
-    // hashPassword(password){
-    //   const bcrypt = require('bcrypt');
-    //   const saltRounds = 10;
-    //   const salt = bcrypt.genSaltSync(saltRounds);
-    //   const hash = bcrypt.hashSync(password, salt);
-    //   console.log(password);
-    //   console.log(hash);
-    //   return hash;
-
-    //   //
-    //   // Load hash from your password DB.
-    //   // bcrypt.compareSync(myPlaintextPassword, hash); // true
-    //   // bcrypt.compareSync(someOtherPlaintextPassword, hash); // false
-    // },
+    hashPassword(password){
+      const bcrypt = require('bcryptjs');
+      const saltRounds = 10;
+      try{
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashP = bcrypt.hashSync(password, salt);
+        console.log(password);
+        console.log(hashP);
+        return hashP;
+      } catch (error){
+        console.log('Error hashing password:', error);
+      }
+      
+      //
+      // Load hash from your password DB.
+      // bcrypt.compareSync(myPlaintextPassword, hash); // true
+      // bcrypt.compareSync(someOtherPlaintextPassword, hash); // false
+    },
   }
 }
 </script>
@@ -98,4 +105,7 @@ button{
   margin-bottom: 20px;
 }
 
+.signup-prompt span {
+  margin-right: 10px;
+}
 </style>
