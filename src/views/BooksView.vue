@@ -14,7 +14,18 @@
                 </div>
                 <button type="button" class="btn bg-warning mt-2 text-white">Add to Cart</button>
             </div>
-            
+        </div>
+        <div class="container card border-dark mb-3" :style="'max-width: '+commentWidth+'px' ">
+            <div class="zh card-header">讀者評論</div>
+            <div v-for="(comment, index) in commentData" :class="(index == (Object.keys(commentData).length-1)?'card-body':'card-header')">
+<!--                <h4 class="card-title " style="text-align: left">Dark card title</h4>-->
+                <div :class="'inline-block '+(index == (Object.keys(commentData).length-1)?'pt-1':'pt-3')">
+                    <img v-for="(star) in stars" :src="require('../assets/star'+(rating >= star?'':'_empty')+'.png')" style="height: 30px;" alt="">
+                </div>
+                <p class="card-text pt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+<!--                <h4 class="card-title " style="text-align: right">- Dark card title</h4>-->
+                
+            </div>
         </div>
     </div>
 </template>
@@ -26,12 +37,16 @@ import { ref } from 'vue'
 import bookData_json from '../assets/test_bookData.json'
 const imgHeight = ref(window.innerHeight -120)
 const imgWidth = ref(window.innerWidth/12*3.5)
+const commentWidth = ref(window.innerWidth*0.8)
 const bookData = JSON.parse(JSON.stringify(bookData_json))[0]
 if (bookData['amount'] > 0) {
     bookData['status'] = 'Available'
 } else {
     bookData['status'] = 'Sold Out'
 }
+const commentData = JSON.parse(JSON.stringify(bookData_json))
+const rating = 3
+const stars = [1,2,3,4,5]
 </script>
 
 <style scoped>
