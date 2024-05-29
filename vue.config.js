@@ -6,7 +6,8 @@ module.exports = defineConfig({
   configureWebpack: {
     resolve: {
       fallback: {
-        "crypto": require.resolve("crypto-browserify")
+        stream: require.resolve('stream-browserify'),
+        crypto: false,
       }
     }
   }
