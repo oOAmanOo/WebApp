@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import IndexPage from "@/views/IndexPage.vue";
 import BooksView from "@/views/BooksView.vue";
+import PurchaseList from "@/views/PurchaseList.vue";
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
         path: '/books',
         name: 'books',
         component: BooksView
+    },
+    {
+        path: '/purchase',
+        name: 'PurchaseList',
+        component: PurchaseList
     }
 ]
 
