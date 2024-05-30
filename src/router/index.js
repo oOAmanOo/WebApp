@@ -3,6 +3,9 @@ import IndexPage from "@/views/IndexPage.vue";
 import BooksView from "@/views/BooksView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignupView from "@/views/SignupView.vue";
+import PurchaseList from "@/views/PurchaseList.vue";
+import Home from "@/views/Home.vue";
+import Cart from "@/views/Cart.vue";
 import test from "@/views/test.vue";
 
 const routes = [
@@ -30,6 +33,21 @@ const routes = [
     path: '/test',
     name: 'test',
     component: test
+  },
+  {
+    path: '/purchase',
+    name: 'PurchaseList',
+    component: PurchaseList
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: Home
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: Cart
   }
 ]
 

@@ -1,6 +1,12 @@
 <template>
-  <router-view/>
+    <Navbar/>
+    <router-view/>
 </template>
+
+
+<script setup>
+import Navbar from "@/components/Navbar.vue";
+</script>
 
 <style>
 #app {
@@ -22,5 +28,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.zh {
+    font-family: 'Noto Sans TC', sans-serif;
 }
 </style>
