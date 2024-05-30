@@ -49,7 +49,7 @@
 <script setup>
 import {onMounted, ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
-import cookie from 'vue-cookies'
+import { useCookies } from 'vue3-cookies';
 import bookData_json from '../assets/test_bookData.json'
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -68,6 +68,12 @@ const commentData = ref(null)
 const rating = [1, 2, 3, 4, 5]
 const cart_amount = ref(0)
 const total = ref(0)
+// get cookies data
+const { cookies } = useCookies();
+const user = cookies.get('user');
+const account = user.account
+const password = user.password
+
 const getBookData = async () => {
     try {
         let getProduct = await axios.get('http://localhost:3000/product/' + bookId)
@@ -113,7 +119,7 @@ const addToCart = () => {
         return
     }
     let product_json = JSON.stringify({
-        password: "cookie.get('password')",
+        password: password,
         products: [
             {
                 id: bookData.value['id'],
@@ -121,7 +127,7 @@ const addToCart = () => {
             }
         ]
     })
-    axios.post('http://localhost:3000/cart/change/'+"cookie.get('account')", {
+    axios.post('http://localhost:3000/cart/change/'+account, {
         product_json
     }).then((response) => {
         let cartData = JSON.parse(JSON.stringify(response.data))

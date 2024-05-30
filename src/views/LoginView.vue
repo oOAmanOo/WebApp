@@ -30,12 +30,6 @@ export default {
     },
 
     async login(account, password){
-      // store user in cookies
-      const user = { account:account,password:password};
-      this.$cookies.set('user', user);
-      console.log(this.$cookies.get('user').account);
-      // console.log(this.$cookies.get('user').password);
-      // stor user in DB
       const server = 'http://localhost:3000';
       const response = await fetch(`${server}/login`, {
         method: 'POST',
