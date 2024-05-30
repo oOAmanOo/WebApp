@@ -1,75 +1,190 @@
 <template>
-    <div class="container justify-content-center pb-5">
+    <div v-if="bookData" class="container justify-content-center pb-5">
         <div class="row justify-content-center p-5">
-            <img class="col-lg-4" :style="'max-height:'+imgHeight+'px; max-width:'+imgWidth+'px'" :src="require('../assets/image/image'+bookData['id']+'.jpg')">
+            <img class="col-lg-4" :style="'max-height:'+imgHeight+'px; max-width:'+imgWidth+'px'"
+                 :src="require('../assets/image/image'+bookData['id']+'.jpg')">
             <div :class="'col-lg-8 text-md-start pt-2 '+(windowHeight > 550?'ps-5':'')">
-                <h3>{{bookData['name']}}</h3>
+                <h3>{{ bookData['name'] }}</h3>
                 <h5 class="zh pt-3">繪本簡介</h5>
                 <p class="alert alert-dismissible alert-light">
                     {{ bookData['summary'] }}</p>
-                <h5 class="zh pt-2">作者: {{bookData['author']}}</h5>
+                <h5 class="zh pt-2">作者: {{ bookData['author'] }}</h5>
                 <div class="pt-2">
-                    <h5 :class="'zh mb-2 '+(windowHeight > 550?'inline-block':'')">價格: {{bookData['price']}} /元</h5>
-                    <span style="font-size: 15px" :class="'badge rounded-pill '+(windowHeight > 550?'inline-block  mb-2 mx-5 ':'')+''+(bookData['status'] == 'Available'?'bg-success':'bg-danger')">{{ bookData['status'] }}</span>
+                    <h5 :class="'zh mb-2 '+(windowHeight > 550?'inline-block':'')">價格: {{ bookData['price'] }}
+                        /元</h5>
+                    <span style="font-size: 15px" :class="'badge rounded-pill '+(windowHeight > 550?'inline-block  mb-2 mx-5 ':'')+''+(bookData['status'] == 'Available'?'bg-success':'bg-danger')">{{ bookData['status']}}</span>
                 </div>
-                <button type="button" class="btn bg-warning mt-2 text-white" @click="addToCart">Add to Cart</button>
+                <div>
+                    <input type="number" class="form-control w-25 inline-block" v-model="cart_amount" @change="priceCompute">
+                    <input type="text" disabled class="form-control ms-2 w-25 inline-block border-0 text-center" :value="total + ' 元'">
+                    <button class="btn btn-warning mx-2 inline-block zh" @click="addToCart">加入購物車</button>
+                </div>
+                
             </div>
         </div>
         <div class="container card border-dark mb-3" :style="'max-width: '+commentWidth+'px' ">
             <div class="zh card-header">讀者評論</div>
-            <div v-for="(comment, index) in commentData" :class="'bg-white '+(index == (Object.keys(commentData).length-1)?'card-body':'card-header')">
-<!--                <h4 class="card-title " style="text-align: left">Dark card title</h4>-->
-                <div :class="'inline-block '+(index == (Object.keys(commentData).length-1)?'pt-1':'pt-3')">
-                    <img v-for="(star) in stars" :src="require('../assets/star'+(rating >= star?'':'_empty')+'.png')" style="height: 30px;" alt="">
+            <div v-if="commentData != null">
+                <div v-for="(commentkey, index) in Object.keys(commentData)"
+                     :class="'bg-white '+((index == Object.keys(commentData).length-1)?'card-body':'card-header')">
+                    <div :class="'inline-block '+(index == (Object.keys(commentData).length-1)?'pt-1':'pt-3')">
+                        <img v-for="(star) in rating" 
+                             :src="require('../assets/star'+(star <= commentData[commentkey]['rating']?'':'_empty')+'.png')"
+                             :style="'height: '+ starHeight+'px'" class="p-0" alt="">
+                    </div>
+                    <p class="card-text pt-2">{{commentData[commentkey]['comment']}}</p>
+                    <h4 class="card-title " style="text-align: right">- {{ commentkey }}</h4>
                 </div>
-                <p class="card-text pt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-<!--                <h4 class="card-title " style="text-align: right">- Dark card title</h4>-->
-                
             </div>
+            <div v-if="commentData.value == undefined">
+                <div class="'bg-white card-body">
+                    <p class="card-text text-danger">No one has evercomment yet. Buy one to comment!</p>
+                </div>
+            </div>
+                
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
-// read test_bookData.json
+import {onMounted, ref, watch} from 'vue'
+import {useRoute} from 'vue-router'
+import cookie from 'vue-cookies'
 import bookData_json from '../assets/test_bookData.json'
 import Swal from "sweetalert2";
 import axios from "axios";
+
+// get windowHeight for style
 const windowHeight = ref(window.innerHeight)
-const imgHeight = ref(window.innerHeight -120)
-const imgWidth = ref(window.innerWidth/12*3.5)
-const commentWidth = ref(window.innerWidth*0.8)
-const bookData = JSON.parse(JSON.stringify(bookData_json))[0]
-if (bookData['amount'] > 0) {
-    bookData['status'] = 'Available'
-} else {
-    bookData['status'] = 'Sold Out'
+const imgHeight = ref(window.innerHeight - 120)
+const imgWidth = ref(window.innerWidth / 12 * 3.5)
+const commentWidth = ref(window.innerWidth * 0.8)
+const starHeight = ref(window.innerHeight /24)
+// get data
+const route = useRoute()
+const bookId = route.query.bookId
+const bookData = ref(null)
+const commentData = ref(null)
+const rating = [1, 2, 3, 4, 5]
+const cart_amount = ref(0)
+const total = ref(0)
+const getBookData = async () => {
+    try {
+        let getProduct = await axios.get('http://localhost:3000/product/' + bookId)
+        let data = JSON.parse(JSON.stringify(getProduct.data))
+        bookData.value = data.productInfos[0]
+        if(data.isSuccess){
+            console.log(bookData.value['amount'])
+            if (bookData.value['amount'] > 0) {
+                bookData.value['status'] = 'Available'
+            } else {
+                bookData.value['status'] = 'Sold Out'
+            }
+        }else{
+            console.log('Get Data error!')
+        }
+    } catch (e) {
+        console.log(e)
+    }
 }
-const commentData = JSON.parse(JSON.stringify(bookData_json))
-const rating = 3
-const stars = [1,2,3,4,5]
+const getCommentData = async () => {
+    try {
+        let getComment = await axios.get('http://localhost:3000/comment/' + bookId)
+        let data = JSON.parse(JSON.stringify(getComment.data))
+        console.log(data.comments)
+        commentData.value = data.comments
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const priceCompute = () => {
+    total.value = parseInt(cart_amount.value) * parseInt(bookData.value['price'])
+}
 
 const addToCart = () => {
-    axios.post('http://localhost:3000/cart', {
-        book_id: bookData['id'],
-        book_name: bookData['name'],
-        book_price: bookData['price'],
-        book_amount: 1
-    }).then( (response) => Swal.fire({
-        icon: 'success',
-        title: 'Add to Cart Successfully',
-        showConfirmButton: false,
-        timer: 1500
-    })).catch( (error) => Swal.fire({
+    if (cart_amount.value == 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Please enter a positive number',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        return
+    }
+    let product_json = JSON.stringify({
+        password: "cookie.get('password')",
+        products: [
+            {
+                id: bookData.value['id'],
+                amount: cart_amount.value
+            }
+        ]
+    })
+    axios.post('http://localhost:3000/cart/change/'+"cookie.get('account')", {
+        product_json
+    }).then((response) => {
+        let cartData = JSON.parse(JSON.stringify(response.data))
+        if (cartData.isSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Add to Cart Successfully',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        } else {
+            if(cartData.cause == 'Wrong account or password.') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please login first',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = '/login'
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'cartData.cause',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        }
+    }).catch((error) => Swal.fire({
         icon: 'error',
-        title: 'Fail to Add to Cart',
+        title: 'Network Error!',
         showConfirmButton: false,
         timer: 1500
     }));
-    
 }
+
+onMounted(() => {
+    window.addEventListener('resize', () => {
+        windowHeight.value = window.innerHeight
+        imgHeight.value = window.innerHeight - 120
+        imgWidth.value = window.innerWidth / 12 * 3.5
+        commentWidth.value = window.innerWidth * 0.8
+        starHeight.value = window.innerHeight / 12 / 3
+    })
+    getBookData();
+    getCommentData();
+})
+
+watch(() => cart_amount.value, () => {
+    if (cart_amount.value < 0) {
+        cart_amount.value = 0
+        Swal.fire({
+            icon: 'warning',
+            title: 'Please enter a positive number',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+})
+
+
+
 </script>
 
 <style scoped>
