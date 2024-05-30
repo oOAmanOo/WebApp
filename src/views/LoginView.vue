@@ -2,8 +2,8 @@
   <div class="login">
     <h1>Log in</h1>
     <form @submit.prevent="submitForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" v-model="username" required>
+      <label for="account">Account:</label>
+      <input type="text" id="account" v-model="account" required>
       <label for="password">Password:</label>
       <input type="password" id="password" v-model="password" required>
       <button type="submit">Log in</button>
@@ -19,37 +19,40 @@
 export default {
   data() {
     return {
-      username: '',
+      account: '',
       password: ''
     };
   },
   methods: {
     submitForm(event) {
       event.preventDefault();
-      // 6碼以上 限制至少包含一英和數字
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-      if (!passwordRegex.test(this.password)) {
-        alert('密碼至少要包含一個英文和數字，且長度至少為六位數');
-        return;
-      } else if (!passwordRegex.test(this.username)){
-        alert('帳號至少要包含一個英文和數字，且長度至少為六位數');
-        return;
-      } else{
-        //TODO: 這裡應該要呼叫API來驗證帳號密碼
-        alert('Login success');
-        const hashP = this.hashPassword(this.password)
-        this.storeUser(this.username, hashP)
-        //this.storeUser(this.username, this.password)
-      }
-      // console.log('Username:', this.username);
-      // console.log('Password:', this.password);
+      this.login(this.account, this.password)
     },
 
-    storeUser(username, password){
-      const user = { username:username,password:password};
+    async login(account, password){
+      // store user in cookies
+      const user = { account:account,password:password};
       this.$cookies.set('user', user);
-      console.log(this.$cookies.get('user').username);
-      console.log(this.$cookies.get('user').password);
+      console.log(this.$cookies.get('user').account);
+      // console.log(this.$cookies.get('user').password);
+      // stor user in DB
+      const server = 'http://localhost:3000';
+      const response = await fetch(`${server}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account, password })
+      });
+
+      const result = await response.json();
+      if(result.isSuccess){
+        // store user in cookies
+        const user = { account:account,password:password};
+        this.$cookies.set('user', user);
+        this.$router.push('/')
+      }else{
+        console.log(result.isSuccess);
+        alert('帳號或密碼錯誤');
+      }
     },
 
     hashPassword(password){
@@ -58,17 +61,10 @@ export default {
       try{
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashP = bcrypt.hashSync(password, salt);
-        console.log(password);
-        console.log(hashP);
         return hashP;
       } catch (error){
         console.log('Error hashing password:', error);
       }
-      
-      //
-      // Load hash from your password DB.
-      // bcrypt.compareSync(myPlaintextPassword, hash); // true
-      // bcrypt.compareSync(someOtherPlaintextPassword, hash); // false
     },
   }
 }

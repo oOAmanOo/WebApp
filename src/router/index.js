@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import IndexPage from "@/views/IndexPage.vue";
 import BooksView from "@/views/BooksView.vue";
 import LoginView from "@/views/LoginView.vue";
+import SignupView from "@/views/SignupView.vue";
+import test from "@/views/test.vue";
 
 const routes = [
   {
@@ -19,6 +21,16 @@ const routes = [
     name: 'login',
     component: LoginView
   },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignupView
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: test
+  }
 ]
 
 const router = createRouter({
