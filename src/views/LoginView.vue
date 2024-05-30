@@ -46,7 +46,8 @@ export default {
       const result = await response.json();
       if(result.isSuccess){
         // store user in cookies
-        const user = { account:account,password:password};
+        console.log(result);
+        const user = { account:account,password:result.password};
         this.$cookies.set('user', user);
         this.$router.push('/')
       }else{

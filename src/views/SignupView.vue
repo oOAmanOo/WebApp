@@ -57,18 +57,14 @@ export default {
         alert('請填寫完整會員基本資料');
         return;
       }else{
-        //TODO: 這裡應該要呼叫API來驗證帳號密碼
         const hashP = this.hashPassword(this.password)
-        this.storeUser(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+        this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+
       }
     },
 
-    async storeUser(account, password, username, email, phonenum, address){
+    async signup(account, password, username, email, phonenum, address){
       const server = 'http://localhost:3000'
-      // const user = { account:account,password:password, username:username, email:email, phonenum:phonenum, address:address};
-
-      // // store user in cookies
-      // this.$cookies.set('user', user);
 
       // call API sotre user in DB
       try{
@@ -77,8 +73,14 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ account, password, username, email, phonenum, address })
         });
-        //const result = await response.json();
-        //console.log(result);
+        const result = await response.json();
+        console.log(result);
+        if(result.isSuccess){
+          this.$router.push('/login')
+        }else{
+          console.log(result.isSuccess);
+          alert('帳號已存在');
+        }
       }catch(error){
         console.log('Error storing user:', error);
       }
