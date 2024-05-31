@@ -72,9 +72,8 @@ const getBookData = async () => {
     try {
         let getProduct = await axios.get('http://localhost:3000/product/' + bookId)
         let data = JSON.parse(JSON.stringify(getProduct.data))
-        bookData.value = data.productInfos[0]
         if(data.isSuccess){
-            console.log(bookData.value['amount'])
+            bookData.value = data.productInfos[0]
             if (bookData.value['amount'] > 0) {
                 bookData.value['status'] = 'Available'
             } else {
@@ -91,8 +90,11 @@ const getCommentData = async () => {
     try {
         let getComment = await axios.get('http://localhost:3000/comment/' + bookId)
         let data = JSON.parse(JSON.stringify(getComment.data))
-        console.log(data.comments)
-        commentData.value = data.comments
+        if(data.isSuccess){
+            commentData.value = data.comments
+        }else{
+            console.log('Get Data error!')
+        }
     } catch (e) {
         console.log(e)
     }

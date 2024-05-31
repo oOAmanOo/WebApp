@@ -6,11 +6,11 @@ import Home from "@/views/Home.vue";
 import Cart from "@/views/Cart.vue";
 
 const routes = [
-  {
-    path: '/',
-    name: 'index',
-    component: IndexPage
-  },
+    {
+        path: '/',
+        name: 'index',
+        component: IndexPage
+    },
     {
         path: '/books',
         name: 'books',
@@ -21,16 +21,16 @@ const routes = [
         name: 'PurchaseList',
         component: PurchaseList
     },
-  {
-    path: '/home',
-    name: 'home',
-    component: Home
-  },
-  {
-    path: '/cart',
-    name: 'cart',
-    component: Cart
-  }
+    {
+        path: '/home',
+        name: 'home',
+        component: Home
+    },
+    {
+        path: '/cart',
+        name: 'cart',
+        component: Cart
+    }
 ]
 
 const router = createRouter({
