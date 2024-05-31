@@ -2,9 +2,11 @@
     <h1 class="zh margin_add">熱門繪本</h1>
     <div class="row">
         <div class="col-sm-4" v-for="(item, index) in recommend" :key="index">
+            <router-link :to="`/books?bookID=${item.id}`">
                 <img :src="require('../assets/image/image' + item.id + '.jpg')" :style="'max-height:'+imgH+'px; max-width:'+imgW+'px'">
                 <h5 class="zh">{{ item.name }}</h5>
                 <h5 class="zh">{{ item.price }} 元</h5>
+            </router-link>
         </div>
     </div>
 
@@ -27,9 +29,11 @@
 
     <div class="row">
         <div class="col-sm-4" v-for="(item, index) in books" :key="index">
-            <img :src="require('../assets/image/image' + item.id + '.jpg')" :style="'max-height:'+imgH+'px; max-width:'+imgW+'px'">
-            <h5 class="zh">{{ item.name }}</h5>
-            <h5 class="zh">{{ item.price }} 元</h5>
+            <router-link :to="`/books?bookID=${item.id}`">
+                <img :src="require('../assets/image/image' + item.id + '.jpg')" :style="'max-height:'+imgH+'px; max-width:'+imgW+'px'">
+                <h5 class="zh">{{ item.name }}</h5>
+                <h5 class="zh">{{ item.price }} 元</h5>
+            </router-link>
         </div>
     </div>
 </template>
