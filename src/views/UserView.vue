@@ -66,5 +66,4 @@ const logout = () => {
 p{
     font-size: 1.2rem;
 }
-g
 </style>
