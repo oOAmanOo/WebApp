@@ -60,21 +60,19 @@
     const imgW = ref(window.innerWidth / 12 * 1.5);
 
     // check cookie if logged in
-    // const { cookies } = useCookies();
-    // const user = cookies.get('user');
-    // if(user != null){
-    //     const account = user.account;
-    //     const password = user.password;
-    // }
-    
-    const user = "????";
-    const account = "Benson0918";
-    const password = "my818200";
-    
+    const { cookies } = useCookies();
+    const user = cookies.get('user');
+    const account = ref("");
+    const password = ref("");
+    if(user != null){
+        account.value = user.account;
+        password.value = user.password;
+    }
+        
     // get cart items
     const items = ref([]);
-    let user_cart = "http://localhost:3000/cart/" + account;
-    axios.post(user_cart, {password: password})
+    let user_cart = "http://localhost:3000/cart/" + account.value;
+    axios.post(user_cart, {password: password.value})
         .then((res) => {
             if(res.data.isSuccess == true){
                 items.value = res.data.productInfos
@@ -91,25 +89,25 @@
 
     // update cart
     function updateCart(id, amount){
-        let url = "http://localhost:3000/cart/change/" + account;
+        let url = "http://localhost:3000/cart/change/" + account.value;
         console.log(url);
         axios.post(url, 
-            {password: password,
+            {password: password.value,
              products: [{id: id, amount: amount}]})
             .then((res) => console.log(res))
             .catch((err) => console.log(err))
 
         // reload amounts
-        axios.post(user_cart, {password: password})
+        axios.post(user_cart, {password: password.value})
             .then((res) => items.value = res.data.productInfos)
             .catch((err) => console.log(err))
     }
 
     // checkout
     function checkout(){
-        let url = "http://localhost:3000/cart/submit/" + account;
+        let url = "http://localhost:3000/cart/submit/" + account.value;
         console.log(url);
-        axios.post(url, {password: password})
+        axios.post(url, {password: password.value})
             .then((res) => {
                 if(res.data.isSuccess == true){
                     Swal.fire({
