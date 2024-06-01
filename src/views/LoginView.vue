@@ -29,8 +29,9 @@ export default {
   methods: {
     submitForm(event) {
       event.preventDefault();
-      const hashP = this.hashPassword(this.password);
-      this.login(this.account, hashP)
+      // const hashP = this.hashPassword(this.password);
+      // this.login(this.account, hashP)
+      this.login(this.account, this.password)
     },
 
     async login(account, password){

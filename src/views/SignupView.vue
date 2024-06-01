@@ -132,8 +132,10 @@ export default {
         alert('請填寫完整會員基本資料');
         return;
       }else{
-        const hashP = this.hashPassword(this.password) //改在後端hash
-        this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+        // const hashP = this.hashPassword(this.password) 
+        // this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+        
+        this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
 
       }
     },
