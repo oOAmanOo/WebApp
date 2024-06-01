@@ -16,6 +16,9 @@
 </template>
 
 <script>
+import { hash } from 'bcryptjs';
+import CryptoJS from 'crypto-js';
+
 export default {
   data() {
     return {
@@ -26,7 +29,8 @@ export default {
   methods: {
     submitForm(event) {
       event.preventDefault();
-      this.login(this.account, this.password)
+      const hashP = this.hashPassword(this.password);
+      this.login(this.account, hashP)
     },
 
     async login(account, password){
@@ -40,28 +44,31 @@ export default {
       const result = await response.json();
       if(result.isSuccess){
         // store user in cookies
-        console.log(result);
         const user = { account:account,password:result.password, personalInfos: result.personalInfos};
         this.$cookies.set('user', user);
         this.$router.push('/home')
         this.$emit('login'); // emit event to App.vue
       }else{
-        console.log(result.isSuccess);
         alert('帳號或密碼錯誤');
       }
     },
-
-    hashPassword(password){
-      const bcrypt = require('bcryptjs');
-      const saltRounds = 10;
-      try{
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hashP = bcrypt.hashSync(password, salt);
-        return hashP;
-      } catch (error){
-        console.log('Error hashing password:', error);
-      }
+    hashPassword(password) {
+        return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     },
+
+    // hashPassword(password){
+    //   const bcrypt = require('bcryptjs');
+    //   const saltRounds = 5;
+    //   try{
+    //     const salt = bcrypt.genSaltSync(saltRounds);
+    //     const hashP = bcrypt.hashSync(password, salt);
+    //     console.log(password);
+    //     console.log(hashP);
+    //     return hashP;
+    //   } catch (error){
+    //     console.log('Error hashing password:', error);
+    //   }
+    // },
   }
 }
 </script>
