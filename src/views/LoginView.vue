@@ -27,11 +27,19 @@ export default {
     };
   },
   methods: {
-    submitForm(event) {
-      event.preventDefault();
+    async submitForm(event) {
+      try {
+        event.preventDefault();
+        const hashP = this.hashPassword(this.password);
+        console.log("hashp in login"+hashP)
+        await this.login(this.account, hashP)
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+      // event.preventDefault();
       // const hashP = this.hashPassword(this.password);
       // this.login(this.account, hashP)
-      this.login(this.account, this.password)
+      // this.login(this.account, this.password)
     },
 
     async login(account, password){
