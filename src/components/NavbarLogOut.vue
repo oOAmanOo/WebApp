@@ -16,10 +16,10 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/user">User</a>
+                        <a class="nav-link" href="/signup">Sign up</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/cart">Cart</a>
+                        <a class="nav-link" href="/login">Log in</a>
                     </li>
                 </ul>
             </div>

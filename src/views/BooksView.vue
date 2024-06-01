@@ -61,7 +61,7 @@ const commentWidth = ref(window.innerWidth * 0.8)
 const starHeight = ref(window.innerHeight /24)
 // get data
 const route = useRoute()
-const bookId = route.query.bookId
+const bookId = route.query.bookID
 const bookData = ref(null)
 const commentData = ref(null)
 const rating = [1, 2, 3, 4, 5]
