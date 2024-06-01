@@ -67,6 +67,7 @@ export default {
   },
   computed: {
     isAccountValid() {
+      // 6碼以上 限制至少包含一英和數字
       const accountRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
       return accountRegex.test(this.account);
     },
@@ -107,36 +108,40 @@ export default {
     inputClass(validationClass) {
       return validationClass === 'has-success' ? 'form-control is-valid' : validationClass === 'has-danger' ? 'form-control is-invalid' : '';
     },
-    submitForm(event) {
+    async submitForm(event) {
       event.preventDefault();    
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const phoneRegex = /^09\d{8}$/;
-      
-      if (!passwordRegex.test(this.password)) {
-        // password check
-        alert('密碼至少要包含一個英文和數字，且長度至少為六位數');
-        return;
-      } else if (!passwordRegex.test(this.account)){
-        // account check
-        alert('帳號至少要包含一個英文和數字，且長度至少為六位數');
-        return;
-      }else if (!emailRegex.test(this.email)) {
-        alert('請輸入有效的電子郵件地址');
-        return;
-      } else if (!phoneRegex.test(this.phonenum)) {
-        alert('電話號碼必須以09開頭，且總長度為10位數字');
-        return;
-      }  else if(this.username === '' || this.email === '' || this.phonenum === '' || this.address === '') {
-        // other fields validation
-        alert('請填寫完整會員基本資料');
-        return;
-      }else{
-        // const hashP = this.hashPassword(this.password) 
-        // this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
-        
-        this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
+      try{
+        if (!passwordRegex.test(this.password)) {
+          // password check
+          alert('密碼至少要包含一個英文和數字，且長度至少為六位數');
+          return;
+        } else if (!passwordRegex.test(this.account)){
+          // account check
+          alert('帳號至少要包含一個英文和數字，且長度至少為六位數');
+          return;
+        }else if (!emailRegex.test(this.email)) {
+          alert('請輸入有效的電子郵件地址');
+          return;
+        } else if (!phoneRegex.test(this.phonenum)) {
+          alert('電話號碼必須以09開頭，且總長度為10位數字');
+          return;
+        }  else if(this.username === '' || this.email === '' || this.phonenum === '' || this.address === '') {
+          // other fields validation
+          alert('請填寫完整會員基本資料');
+          return;
+        }else{
+          const hashP = this.hashPassword(this.password) 
+          console.log("hashp in signup"+hashP)
+          await this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+          
+          //this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
 
+        }
+      }catch(error){
+      console.log('Error submitting form:', error);
       }
     },
 
