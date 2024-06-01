@@ -145,14 +145,12 @@ const addToCart = () => {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    console.log('http://localhost:3000/cart/change/'+account)
-                    console.log(product_json)
-                    // window.location.href = '/login'
+                    window.location.href = '/login'
                 })
             }else{
                 Swal.fire({
                     icon: 'error',
-                    title: 'cartData.cause',
+                    title: cartData.cause,
                     showConfirmButton: false,
                     timer: 1500
                 })
