@@ -2,27 +2,49 @@
   <div class="signup container justify-content-center p-5 mt-5">
     <h1>Sign up</h1>
     <form @submit.prevent="submitForm">
+    <div :class="accountClass">
       <label for="account">Account</label>
-      <input type="text" id="account" placeholder="最少六碼，且至少包含各一數字與英文字母" v-model="account" required>
+      <input type="text" id="account" placeholder="最少六碼，且至少包含各一數字與英文字母" v-model="account" @blur="accountTouched = true" :class="inputClass(accountClass)" required>
+      <div class="invalid-feedback" v-if="accountTouched && !isAccountValid">帳號至少要包含一個英文和數字，且長度至少為六位數</div>
+    </div>
+    
+    <div :class="passwordClass">
       <label for="password">Password</label>
-      <input type="password" id="password" placeholder="最少六碼，且至少包含各一數字與英文字母" v-model="password" required>
-      
-      <span>會員基本資料</span>
+      <input type="password" id="password" placeholder="最少六碼，且至少包含各一數字與英文字母" v-model="password" @blur="passwordTouched = true" :class="inputClass(passwordClass)" required>
+      <div class="invalid-feedback" v-if="passwordTouched && !isPasswordValid">密碼至少要包含一個英文和數字，且長度至少為六位數</div>
+    </div>
+    
+    <span>會員基本資料</span>
+    
+    <div :class="userClass">
       <label for="username">User name</label>
-      <input type="username" id="username" placeholder="Enter name" v-model="username" required>
+      <input type="text" id="username" placeholder="Enter name" v-model="username" :class="inputClass(userClass)" required>
+    </div>
+    
+    <div :class="emailClass">
       <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Enter email" v-model="email" required>
+      <input type="email" id="email" placeholder="example@example.com" v-model="email" @blur="emailTouched = true" :class="inputClass(emailClass)" required>
+      <div class="invalid-feedback" v-if="emailTouched && !isEmailValid">請輸入有效的電子郵件地址</div>
+    </div>
+    
+    <div :class="phoneClass">
       <label for="phonenum">Phone number</label>
-      <input type="phonenum" id="phonenum" placeholder="Enter phone number" v-model="phonenum" required>
+      <input type="text" id="phonenum" placeholder="09xxxxxxxx" v-model="phonenum" @blur="phoneTouched = true" :class="inputClass(phoneClass)" required>
+      <div class="invalid-feedback" v-if="phoneTouched && !isPhoneValid">電話號碼必須以09開頭，且總長度為10位數字</div>
+    </div>
+    
+    <div :class="addressClass">
       <label for="address">Address</label>
-      <input type="address" id="address" placeholder="Enter address" v-model="address" required>
+      <input type="text" id="address" placeholder="Enter address" v-model="address" :class="inputClass(addressClass)" required>
+    </div>
 
-      <button type="submit">Sign up</button>
-      <div class="login-prompt">
-        <span>Already have an account?</span>
-        <router-link to="/login">Log in</router-link>
-      </div>
-    </form>
+    <button type="submit">Sign up</button>
+    
+    <div class="login-prompt">
+      <span>Already have an account?</span>
+      <router-link to="/login">Log in</router-link>
+    </div>
+  </form>
   </div>
 </template>
 
@@ -36,15 +58,61 @@ export default {
       username: '',
       email: '',
       phonenum: '',
-      address: ''
+      address: '',
+      accountTouched: false,
+      passwordTouched: false,
+      emailTouched: false,
+      phoneTouched: false,
     };
   },
+  computed: {
+    isAccountValid() {
+      const accountRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      return accountRegex.test(this.account);
+    },
+    isPasswordValid() {
+      // 6碼以上 限制至少包含一英和數字
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/; 
+      return passwordRegex.test(this.password);
+    },
+    isEmailValid() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(this.email);
+    },
+    isPhoneValid() {
+      // 09xxxxxxxx
+      const phoneRegex = /^09\d{8}$/;
+      return phoneRegex.test(this.phonenum);
+    },
+    accountClass() {
+      return this.account ? (this.isAccountValid ? 'has-success' : 'has-danger') : '';
+    },
+    userClass() {
+      return this.username ? 'has-success' : '';
+    },  
+    passwordClass() {
+      return this.password ? (this.isPasswordValid ? 'has-success' : 'has-danger') : '';
+    },
+    emailClass() {
+      return this.email ? (this.isEmailValid ? 'has-success' : 'has-danger') : '';
+    },
+    phoneClass() {
+      return this.phonenum ? (this.isPhoneValid ? 'has-success' : 'has-danger') : '';
+    },
+    addressClass() {
+      return this.address ? 'has-success' : '';
+    }
+  },
   methods: {
+    inputClass(validationClass) {
+      return validationClass === 'has-success' ? 'form-control is-valid' : validationClass === 'has-danger' ? 'form-control is-invalid' : '';
+    },
     submitForm(event) {
       event.preventDefault();    
-      // 6碼以上 限制至少包含一英和數字
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^09\d{8}$/;
+      
       if (!passwordRegex.test(this.password)) {
         // password check
         alert('密碼至少要包含一個英文和數字，且長度至少為六位數');
@@ -53,7 +121,13 @@ export default {
         // account check
         alert('帳號至少要包含一個英文和數字，且長度至少為六位數');
         return;
-      } else if(this.username === '' || this.email === '' || this.phonenum === '' || this.address === '') {
+      }else if (!emailRegex.test(this.email)) {
+        alert('請輸入有效的電子郵件地址');
+        return;
+      } else if (!phoneRegex.test(this.phonenum)) {
+        alert('電話號碼必須以09開頭，且總長度為10位數字');
+        return;
+      }  else if(this.username === '' || this.email === '' || this.phonenum === '' || this.address === '') {
         // other fields validation
         alert('請填寫完整會員基本資料');
         return;
@@ -117,6 +191,10 @@ h1 {
 }
 
 form {
+  display: flex;
+  flex-direction: column;
+}
+div{
   display: flex;
   flex-direction: column;
 }
