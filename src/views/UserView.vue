@@ -6,7 +6,7 @@
         <div class="row justify-content-start">
             <div class="avatar col-sm-6">
                 <div class="card">
-  <h3 class="card-header">Card header</h3>
+  <h3 class="card-header">ME</h3>
   <img :src="require('../assets/avatar.png')" alt="Dinosaur Icon" class="profile-img"/>
                 </div>
             </div>
