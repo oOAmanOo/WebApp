@@ -1,5 +1,5 @@
 <template>
-  <div class="signup">
+  <div class="signup container justify-content-center p-5 mt-5">
     <h1>Sign up</h1>
     <form @submit.prevent="submitForm">
       <label for="account">Account</label>
@@ -57,8 +57,8 @@ export default {
         alert('請填寫完整會員基本資料');
         return;
       }else{
-        const hashP = this.hashPassword(this.password)
-        this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
+        //const hashP = this.hashPassword(this.password) //改在後端hash
+        this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
 
       }
     },
@@ -86,28 +86,26 @@ export default {
       }
     },
 
-    hashPassword(password){
-      const bcrypt = require('bcryptjs');
-      const saltRounds = 10;
-      try{
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hashP = bcrypt.hashSync(password, salt);
-        console.log(password);
-        console.log(hashP);
-        return hashP;
-      } catch (error){
-        console.log('Error hashing password:', error);
-      }
-    },
+    // hashPassword(password){
+    //   const bcrypt = require('bcryptjs');
+    //   const saltRounds = 10;
+    //   try{
+    //     const salt = bcrypt.genSaltSync(saltRounds);
+    //     const hashP = bcrypt.hashSync(password, salt);
+    //     console.log(password);
+    //     console.log(hashP);
+    //     return hashP;
+    //   } catch (error){
+    //     console.log('Error hashing password:', error);
+    //   }
+    // },
   }
 }
 </script>
 
 <style scoped>
 .signup {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
+  max-width: 600px;
   border: 1px solid #ccc;
   border-radius: 8px;
 }
