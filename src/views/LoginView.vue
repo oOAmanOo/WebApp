@@ -31,7 +31,6 @@ export default {
       try {
         event.preventDefault();
         const hashP = this.hashPassword(this.password);
-        console.log("hashp in login"+hashP)
         await this.login(this.account, hashP)
       } catch (error) {
         console.error('Error submitting form:', error);

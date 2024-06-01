@@ -2,12 +2,11 @@
     <div class="container card border-dark my-3 " :style="'max-width: '+windowWidth+'px' ">
         <div class="zh card-header">歷史購買紀錄</div>
         <div v-if="!PurchaseList"
-             :class="'row p-4 '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
+             class="row p-4 card-body">
             <h4 class="card-title" style="text-align: center">Haven't bought any book yet.</h4>
             <h4 class="card-title" style="text-align: center">Hope you find a nice book~</h4>
         </div>
         <div v-for="(book, index) in PurchaseList"
-             
              :class="'row p-4 '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
             <div class="col-2 " ><img style="width:100%" :src="require('../assets/image/image'+book['id']+'.jpg')"></div>
             
@@ -71,7 +70,7 @@ const bookData = JSON.parse(JSON.stringify(bookData_json))
 const hasComment = ref(true)
 let account = null
 let password = null
-const PurchaseList = ref([])
+const PurchaseList = ref(false)
 const rating = [1, 2, 3, 4, 5]
 const present_index = ref(-1)
 const present_bookID = ref(-1)
@@ -84,9 +83,11 @@ const getPurchaseListData = async () => {
         password: password
     }).then((response) => {
         let PurchaseListData = JSON.parse(JSON.stringify(response.data))
-        if (PurchaseListData.isSuccess) {
+        if (PurchaseListData.isSuccess && Object.keys(PurchaseListData.productInfos).length > 0) {
             PurchaseList.value = PurchaseListData.productInfos
-        } else {
+        } else if(PurchaseListData.isSuccess){
+            PurchaseList.value = false
+        }else {
             Swal.fire({
                 icon: 'warning',
                 title: 'Please login first',
@@ -97,7 +98,7 @@ const getPurchaseListData = async () => {
             })
         }
     }).catch((error) => {
-        PurchaseList.value = null
+        PurchaseList.value = false
     });
 }
 
