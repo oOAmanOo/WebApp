@@ -84,10 +84,8 @@ const getPurchaseListData = async () => {
         password: password
     }).then((response) => {
         let PurchaseListData = JSON.parse(JSON.stringify(response.data))
-        console.log(PurchaseListData)
         if (PurchaseListData.isSuccess) {
             PurchaseList.value = PurchaseListData.productInfos
-            console.log(PurchaseList.value)
         } else {
             Swal.fire({
                 icon: 'warning',
@@ -123,12 +121,10 @@ const commentClick = (index) => {
 }
 
 const ratingClick = (star) => {
-    console.log(star)
     present_rating.value = star
 }
 
 const commentSubmit = () => {
-    console.log(present_rating.value)
     if(present_rating.value <= 0){
         Swal.fire({
             icon: 'warning',
@@ -147,15 +143,12 @@ const commentSubmit = () => {
         })
         return
     }
-    console.log({rating : present_rating.value,
-        comment: present_Comment.value
-    })
+    
     axios.post('http://localhost:3000/comment/' + account + '/' + present_bookID.value, {
         rating : present_rating.value,
         comment: present_Comment.value
     }).then((response) => {
         let writeCommentData = JSON.parse(JSON.stringify(response.data))
-        console.log(writeCommentData)
         if (writeCommentData.isSuccess) {
             PurchaseList.value[present_index.value]['isComment'] = true
             Swal.fire({
@@ -190,7 +183,6 @@ onMounted(() => {
         imgWidth.value = window.innerWidth / 6
         imgHeight.value = window.innerHeight /3
     })
-    console.log(cookies.get('user') === null);
     if (cookies.get('user') === null) {
         account.value = 'null'
         password.value = 'null'
@@ -198,7 +190,6 @@ onMounted(() => {
         account = cookies.get('user').account
         password = cookies.get('user').password
     }
-    console.log(account, password)
     getPurchaseListData()
 })
 

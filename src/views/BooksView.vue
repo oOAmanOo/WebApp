@@ -177,11 +177,9 @@ onMounted(() => {
     })
     
     if(cookies.get('user') == null){
-        console.log(cookies.get('user') == null)
         account = 'no login'
         password = 'no login'
     }else{
-        console.log(cookies.get('user'))
         account = cookies.get('user').account
         password = cookies.get('user').password
     }

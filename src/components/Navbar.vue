@@ -48,7 +48,6 @@ const windowWidth = ref(window.innerWidth);
 onMounted(() => {
     window.addEventListener('resize', () => {
         windowWidth.value = window.innerWidth;
-        console.log(windowWidth.value)
     })
 })
 </script>
