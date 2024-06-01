@@ -16,6 +16,9 @@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
+                        <router-link to="/purchase" class="nav-link">Purchase List</router-link>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/user">User</a>
                     </li>
                     <li class="nav-item">

@@ -24,19 +24,19 @@
         </div>
         <div class="container card border-dark mb-3" :style="'max-width: '+commentWidth+'px' ">
             <div class="zh card-header">讀者評論</div>
-            <div v-if="commentData != null">
+            <div v-if="commentData">
                 <div v-for="(commentkey, index) in Object.keys(commentData)"
                      :class="'bg-white '+((index == Object.keys(commentData).length-1)?'card-body':'card-header')">
                     <div :class="'inline-block '+(index == (Object.keys(commentData).length-1)?'pt-1':'pt-3')">
                         <img v-for="(star) in rating" 
-                             :src="require('../assets/star'+(star <= commentData[commentkey]['rating']?'':'_empty')+'.png')"
+                             :src="require('../assets/star'+(star <= commentData[commentkey][0]?'':'_empty')+'.png')"
                              :style="'height: '+ starHeight+'px'" class="p-0" alt="">
                     </div>
-                    <p class="card-text pt-2">{{commentData[commentkey]['comment']}}</p>
+                    <p class="card-text pt-2">{{commentData[commentkey][1]}}</p>
                     <h4 class="card-title " style="text-align: right">- {{ commentkey }}</h4>
                 </div>
             </div>
-            <div v-if="commentData.value == undefined">
+            <div v-if="!commentData">
                 <div class="'bg-white card-body">
                     <p class="card-text text-danger">No one has evercomment yet. Buy one to comment!</p>
                 </div>
@@ -85,7 +85,7 @@ const getBookData = async () => {
                 bookData.value['status'] = 'Sold Out'
             }
         }else{
-            console.log('Get Data error!')
+            console.log('Get Book Data error!')
         }
     } catch (e) {
         console.log(e)
@@ -95,10 +95,12 @@ const getCommentData = async () => {
     try {
         let getComment = await axios.get('http://localhost:3000/comment/' + bookId)
         let data = JSON.parse(JSON.stringify(getComment.data))
-        if(data.isSuccess){
+        if(data.isSuccess && Object.keys(data.comments).length != 0){
             commentData.value = data.comments
+        }else if(Object.keys(data.comments).length == 0){
+            commentData.value = false
         }else{
-            console.log('Get Data error!')
+            console.log('Get Comment Data error!')
         }
     } catch (e) {
         console.log(e)

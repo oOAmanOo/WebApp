@@ -7,6 +7,7 @@
             <h4 class="card-title" style="text-align: center">Hope you find a nice book~</h4>
         </div>
         <div v-for="(book, index) in PurchaseList"
+             
              :class="'row p-4 bg-white '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
             <div class="col-2 " ><img style="width:100%" :src="require('../assets/image/image'+book['id']+'.jpg')"></div>
             
@@ -73,6 +74,7 @@ let password = null
 const PurchaseList = ref([])
 const rating = [1, 2, 3, 4, 5]
 const present_index = ref(-1)
+const present_bookID = ref(-1)
 const present_rating = ref(0)
 const present_Comment = ref('')
 const commentPlaceholder = ref('')
@@ -103,23 +105,25 @@ const getPurchaseListData = async () => {
 
 const commentClick = (index) => {
     present_index.value = index
+    present_bookID.value = PurchaseList.value[index]['id']
     commentPlaceholder.value = 'I think that "' + PurchaseList.value[index]['name'] + '" is ...'
-    if(PurchaseList.value[index]['present_rating'] > 0){
-        present_rating.value = PurchaseList.value[index]['present_rating']
-    }else{
-        present_rating.value = 0
+    if(PurchaseList.value[index]['present_rating'] === undefined){
+        present_rating.value = []
         PurchaseList.value[index]['present_rating'] = 0
-    }
-    console.log(present_rating.value)
-    if(PurchaseList.value[index]['present_Comment'] !== null){
-        present_Comment.value = PurchaseList.value[index]['present_Comment']
+        
     }else{
+        present_rating.value = PurchaseList.value[index]['present_rating']
+    }
+    if(PurchaseList.value[index]['present_Comment'] === undefined){
         present_Comment.value = ''
-        PurchaseList.value[index]['present_Comment'] = ''
+        PurchaseList.value[index]['present_Comment'] = ['']
+    }else{
+        present_Comment.value = PurchaseList.value[index]['present_Comment']
     }
 }
 
 const ratingClick = (star) => {
+    console.log(star)
     present_rating.value = star
 }
 
@@ -143,7 +147,10 @@ const commentSubmit = () => {
         })
         return
     }
-    axios.post('http://localhost:3000/comment/' + account + '/' + present_index.value, {
+    console.log({rating : present_rating.value,
+        comment: present_Comment.value
+    })
+    axios.post('http://localhost:3000/comment/' + account + '/' + present_bookID.value, {
         rating : present_rating.value,
         comment: present_Comment.value
     }).then((response) => {
@@ -157,7 +164,7 @@ const commentSubmit = () => {
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                window.location.href = '/books/'+PurchaseList.value[present_index.value]['id']
+                window.location.href = '/books/?bookID='+PurchaseList.value[present_index.value]['id']
             })
         } else {
             Swal.fire({
@@ -196,13 +203,19 @@ onMounted(() => {
 })
 
 watch(() => present_rating.value, () => {
-    PurchaseList.value[present_index.value]['present_rating'] = present_rating.value
+    if(PurchaseList.value[present_index.value]['present_rating'] != undefined){
+        PurchaseList.value[present_index.value]['present_rating'] = present_rating.value
+    }
 })
 watch(() => present_Comment.value, () => {
-    PurchaseList.value[present_index.value]['present_Comment'] = present_Comment.value
+    if(PurchaseList.value[present_index.value]['present_Comment'] != undefined){
+        PurchaseList.value[present_index.value]['present_Comment'] = present_Comment.value
+    }
 })
 </script>
 
 <style scoped>
 
 </style>
+
+
