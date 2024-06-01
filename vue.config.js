@@ -12,5 +12,13 @@ module.exports = defineConfig({
         });
         return definitions;
     });
+  },
+  configureWebpack: {
+    resolve: {
+      fallback: {
+        stream: require.resolve('stream-browserify'),
+        crypto: false,
+      }
+    }
   }
 });
