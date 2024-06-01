@@ -47,7 +47,7 @@ export default {
         // store user in cookies
         const user = { account:account,password:result.password, personalInfos: result.personalInfos};
         this.$cookies.set('user', user);
-        this.$router.push('/home')
+        this.$router.push('/')
         this.$emit('login'); // emit event to App.vue
       }else{
         alert('帳號或密碼錯誤');
