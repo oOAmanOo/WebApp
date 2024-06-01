@@ -114,7 +114,7 @@
                         title: "Checkout!",
                         icon: "success"
                     }).then(function(){
-                        window.location = "/home";
+                        window.location = "/";
                     })
                 }
                 else{
