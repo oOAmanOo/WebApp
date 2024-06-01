@@ -82,6 +82,8 @@
                     title: "Empty!",
                     icon: "warning",
                     text: res.data.cause
+                }).then(function(){
+                    window.location = "/";
                 })
             }
         })
