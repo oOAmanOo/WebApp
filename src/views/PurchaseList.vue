@@ -156,7 +156,7 @@ onMounted(() => {
         imgHeight.value = window.innerHeight /3
     })
     console.log(cookies.get('user') === null);
-    if (cookies.get('user') === null) {
+    if (cookies.get('user') !== null) {
         // account.value = 'null'
         // password.value = 'null'
         account = 'Alice123'

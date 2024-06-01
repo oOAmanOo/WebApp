@@ -119,17 +119,15 @@ const addToCart = () => {
         })
         return
     }
-    let product_json = JSON.stringify({
+    
+    axios.post('http://localhost:3000/cart/change/'+account, {
         password: password,
         products: [
             {
-                id: bookData.value['id'],
-                amount: cart_amount.value
+                "id": bookData.value['id'],
+                "amount": cart_amount.value
             }
         ]
-    })
-    axios.post('http://localhost:3000/cart/change/'+account, {
-        product_json
     }).then((response) => {
         let cartData = JSON.parse(JSON.stringify(response.data))
         if (cartData.isSuccess) {
@@ -147,7 +145,9 @@ const addToCart = () => {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    window.location.href = '/login'
+                    console.log('http://localhost:3000/cart/change/'+account)
+                    console.log(product_json)
+                    // window.location.href = '/login'
                 })
             }else{
                 Swal.fire({
@@ -180,8 +180,9 @@ onMounted(() => {
         account = 'no login'
         password = 'no login'
     }else{
-        account = user.account
-        password = user.password
+        console.log(cookies.get('user'))
+        account = cookies.get('user').account
+        password = cookies.get('user').password
     }
     getBookData();
     getCommentData();
