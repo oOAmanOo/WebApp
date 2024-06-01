@@ -7,7 +7,7 @@
             <h4 class="card-title" style="text-align: center">Hope you find a nice book~</h4>
         </div>
         <div v-for="(book, index) in PurchaseList"
-             :class="'row p-4 '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
+             :class="'row p-4 '+(index == (Object.keys(PurchaseList).length-1)?'card-body':'card-header')">
             <div class="col-2 " ><img style="width:100%" :src="require('../assets/image/image'+book['id']+'.jpg')"></div>
             
             <div class="col-10 p-2 ">
@@ -53,7 +53,6 @@
 </template>
 
 <script setup>
-import bookData_json from "@/assets/test_bookData.json";
 import axios from "axios";
 import {onMounted, watch} from "vue";
 import Swal from "sweetalert2";
@@ -61,17 +60,17 @@ import {useCookies} from "vue3-cookies";
 
 const {cookies} = useCookies();
 const {ref} = require('vue')
+
 const windowHeight = ref(window.innerHeight)
 const windowWidth = ref(window.innerWidth *0.8)
 const imgWidth = ref(window.innerWidth/6)
 const imgHeight = ref(window.innerHeight - 300)
 const starHeight = ref(50)
-const bookData = JSON.parse(JSON.stringify(bookData_json))
-const hasComment = ref(true)
+const rating = [1, 2, 3, 4, 5]
+
 let account = null
 let password = null
 const PurchaseList = ref(false)
-const rating = [1, 2, 3, 4, 5]
 const present_index = ref(-1)
 const present_bookID = ref(-1)
 const present_rating = ref(0)
@@ -195,12 +194,12 @@ onMounted(() => {
 })
 
 watch(() => present_rating.value, () => {
-    if(PurchaseList.value[present_index.value]['present_rating'] != undefined){
+    if(PurchaseList.value[present_index.value]['present_rating'] !== undefined){
         PurchaseList.value[present_index.value]['present_rating'] = present_rating.value
     }
 })
 watch(() => present_Comment.value, () => {
-    if(PurchaseList.value[present_index.value]['present_Comment'] != undefined){
+    if(PurchaseList.value[present_index.value]['present_Comment'] !== undefined){
         PurchaseList.value[present_index.value]['present_Comment'] = present_Comment.value
     }
 })

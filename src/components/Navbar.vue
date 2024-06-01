@@ -35,6 +35,9 @@
                             <h5 v-else class="text-white p-2 mt-1">Cart</h5>
                         </router-link>
                     </li>
+                    <li :class="'mr-5 nav-item '+(windowWidth > 990?'':'border-bottom')">
+                        <img v-if="windowWidth > 990" src="../assets/signout.png" alt="cart" style="height: 60px"  @click="logout">
+                    </li>
                 </ul>
             </div>
         </div>
@@ -43,8 +46,14 @@
 
 <script setup>
 import {onMounted, ref, watch} from 'vue'
+import router from "@/router";
 const windowWidth = ref(window.innerWidth);
 
+const logout = () => {
+    cookies.remove('user');
+    router.push('/');
+    emit('logout'); // emit event to App.vue
+}
 onMounted(() => {
     window.addEventListener('resize', () => {
         windowWidth.value = window.innerWidth;
