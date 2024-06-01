@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import CryptoJS from 'crypto-js';
 export default {
   data() {
     return {
@@ -57,8 +58,8 @@ export default {
         alert('請填寫完整會員基本資料');
         return;
       }else{
-        //const hashP = this.hashPassword(this.password) //改在後端hash
-        this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
+        const hashP = this.hashPassword(this.password) //改在後端hash
+        this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
 
       }
     },
@@ -74,11 +75,9 @@ export default {
           body: JSON.stringify({ account, password, username, email, phonenum, address })
         });
         const result = await response.json();
-        console.log(result);
         if(result.isSuccess){
           this.$router.push('/login')
         }else{
-          console.log(result.isSuccess);
           alert('帳號已存在');
         }
       }catch(error){
@@ -86,9 +85,12 @@ export default {
       }
     },
 
+    hashPassword(password) {
+      return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+    }
     // hashPassword(password){
     //   const bcrypt = require('bcryptjs');
-    //   const saltRounds = 10;
+    //   const saltRounds = 5;
     //   try{
     //     const salt = bcrypt.genSaltSync(saltRounds);
     //     const hashP = bcrypt.hashSync(password, salt);
