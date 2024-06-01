@@ -15,9 +15,9 @@
                     <span style="font-size: 15px" :class="'badge rounded-pill '+(windowHeight > 550?'inline-block  mb-2 mx-5 ':'')+''+(bookData['status'] == 'Available'?'bg-success':'bg-danger')">{{ bookData['status']}}</span>
                 </div>
                 <div>
-                    <input type="number" class="form-control w-25 inline-block" v-model="cart_amount" @change="priceCompute">
+                    <input type="number" :class="'form-control w-25 inline-block '+(bookData['status'] == 'Available'?'':'disabled')" v-model="cart_amount" @change="priceCompute">
                     <input type="text" disabled class="form-control ms-2 w-25 inline-block border-0 text-center" :value="total + ' 元'">
-                    <button class="btn btn-warning mx-2 inline-block zh" @click="addToCart">加入購物車</button>
+                    <button :class="'btn mx-2 inline-block zh '+(bookData['status'] == 'Available'?'btn-warning':'disabled btn-secondary')" @click="addToCart">加入購物車</button>
                 </div>
                 
             </div>
@@ -102,6 +102,7 @@ const getCommentData = async () => {
         }else{
             console.log('Get Comment Data error!')
         }
+        console.log(commentData)
     } catch (e) {
         console.log(e)
     }

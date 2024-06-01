@@ -8,7 +8,7 @@
         </div>
         <div v-for="(book, index) in PurchaseList"
              
-             :class="'row p-4 bg-white '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
+             :class="'row p-4 '+(index == (Object.keys(bookData).length-1)?'card-body':'card-header')">
             <div class="col-2 " ><img style="width:100%" :src="require('../assets/image/image'+book['id']+'.jpg')"></div>
             
             <div class="col-10 p-2 ">
