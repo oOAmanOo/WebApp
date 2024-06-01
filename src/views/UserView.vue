@@ -10,12 +10,13 @@
   <img :src="require('../assets/avatar.png')" alt="Dinosaur Icon" class="profile-img"/>
                 </div>
             </div>
-            <div class="info col-sm-6 my-5 px-5">
-                <h2 v-if="personalInfos">
-      <h2  v-for="(value, key) in personalInfos" :key="key">
-        {{ key }}:  {{ value }}
-      </h2>
-    </h2>
+            <div class="info col-sm-6 my-5 px-5 ">
+                <div v-if="personalInfos">
+      <div  v-for="(value, key) in personalInfos" :key="key" class="d-flex align-items-center mb-2">
+            <h2 class="mx-2 mb-0">{{ key }}:</h2>
+            <p class="mb-0">{{ value }}</p>
+      </div>
+    </div>
     <p v-else>No user information available.</p>
     <button type="button" class="btn btn-danger my-5" @click="logout">Log out</button> 
             </div>
@@ -61,4 +62,9 @@ const logout = () => {
 .info{
     text-align: left
 }
+
+p{
+    font-size: 1.2rem;
+}
+g
 </style>
