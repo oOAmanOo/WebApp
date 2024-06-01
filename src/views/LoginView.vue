@@ -1,7 +1,7 @@
 <template>
-  <div class="login">
+  <div class="login container justify-content-center p-5 mt-5 mb-5">
     <h1>Log in</h1>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="">
       <label for="account">Account:</label>
       <input type="text" id="account" v-model="account" required>
       <label for="password">Password:</label>
@@ -41,9 +41,10 @@ export default {
       if(result.isSuccess){
         // store user in cookies
         console.log(result);
-        const user = { account:account,password:result.password};
+        const user = { account:account,password:result.password, personalInfos: result.personalInfos};
         this.$cookies.set('user', user);
-        this.$router.push('/')
+        this.$router.push('/home')
+        this.$emit('login'); // emit event to App.vue
       }else{
         console.log(result.isSuccess);
         alert('帳號或密碼錯誤');
@@ -67,9 +68,7 @@ export default {
 
 <style scoped>
 .login {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
+  max-width: 600px;
   border: 1px solid #ccc;
   border-radius: 8px;
 }
@@ -99,4 +98,5 @@ button{
 .signup-prompt span {
   margin-right: 10px;
 }
+
 </style>

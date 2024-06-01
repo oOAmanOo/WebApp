@@ -1,11 +1,25 @@
 <template>
-    <Navbar/>
-    <router-view/>
+      <component :is="navbarComponent"></component>
+      <router-view @login="handleLogin" @logout="handleLogout"/>
 </template>
 
 
 <script setup>
+import { ref } from 'vue';
 import Navbar from "@/components/Navbar.vue";
+import NavbarLogOut from "@/components/NavbarLogOut.vue";
+import { useCookies } from 'vue3-cookies';
+const { cookies } = useCookies();
+const user = cookies.get('user');
+const navbarComponent = ref(user ? Navbar : NavbarLogOut);
+
+const handleLogin = () => {
+    navbarComponent.value = Navbar;
+}
+
+const handleLogout = () => {
+    navbarComponent.value = NavbarLogOut;
+} 
 </script>
 
 <style>
