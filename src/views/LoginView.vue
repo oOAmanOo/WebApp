@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { hash } from 'bcryptjs';
 import CryptoJS from 'crypto-js';
 
 export default {
@@ -35,10 +34,6 @@ export default {
       } catch (error) {
         console.error('Error submitting form:', error);
       }
-      // event.preventDefault();
-      // const hashP = this.hashPassword(this.password);
-      // this.login(this.account, hashP)
-      // this.login(this.account, this.password)
     },
 
     async login(account, password){
@@ -63,20 +58,6 @@ export default {
     hashPassword(password) {
         return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     },
-
-    // hashPassword(password){
-    //   const bcrypt = require('bcryptjs');
-    //   const saltRounds = 5;
-    //   try{
-    //     const salt = bcrypt.genSaltSync(saltRounds);
-    //     const hashP = bcrypt.hashSync(password, salt);
-    //     console.log(password);
-    //     console.log(hashP);
-    //     return hashP;
-    //   } catch (error){
-    //     console.log('Error hashing password:', error);
-    //   }
-    // },
   }
 }
 </script>

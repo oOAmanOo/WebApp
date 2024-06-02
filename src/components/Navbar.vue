@@ -34,6 +34,7 @@
                     </li>
                     <li :class="'mr-5 nav-item '+(windowWidth > 990?'':'border-bottom')">
                         <img v-if="windowWidth > 990" src="../assets/signout.png" alt="cart" style="height: 60px"  @click="logout">
+                        <h5 v-else class="text-white p-2 mt-1"  @click="logout">Log Out</h5>
                     </li>
                 </ul>
             </div>
