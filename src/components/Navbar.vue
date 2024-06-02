@@ -45,15 +45,27 @@
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from 'vue'
+import {onMounted, ref} from 'vue'
+
 import router from "@/router";
+import { useCookies } from 'vue3-cookies';
+const { cookies } = useCookies();
+const emit = defineEmits(['logout'])
 const windowWidth = ref(window.innerWidth);
 
 const logout = () => {
-    cookies.remove('user');
-    router.push('/');
-    emit('logout'); // emit event to App.vue
+    if(cookies.get('user')){
+        cookies.remove('user')
+        emit('logout'); // emit event to App.vue
+    }
+    if(router.currentRoute.value.path ==='/'){
+        window.location.reload()
+    }else{
+        router.push('/');
+    }
+    
 }
+
 onMounted(() => {
     window.addEventListener('resize', () => {
         windowWidth.value = window.innerWidth;

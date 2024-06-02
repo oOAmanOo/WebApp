@@ -1,6 +1,6 @@
 <template>
     <div :style="'min-height:'+windowWidth+'px'">
-      <component :is="navbarComponent"></component>
+      <component :is="navbarComponent" @logout="handleLogout"></component >
       <router-view @login="handleLogin" @logout="handleLogout"/>
     </div>
 </template>

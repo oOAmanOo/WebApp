@@ -97,6 +97,7 @@ const getPurchaseListData = async () => {
             })
         }
     }).catch((error) => {
+        console.log(error)
         PurchaseList.value = false
     });
 }
@@ -184,8 +185,8 @@ onMounted(() => {
         imgHeight.value = window.innerHeight /3
     })
     if (cookies.get('user') === null) {
-        account.value = 'null'
-        password.value = 'null'
+        account = 'no login'
+        password = 'no login'
     } else {
         account = cookies.get('user').account
         password = cookies.get('user').password
