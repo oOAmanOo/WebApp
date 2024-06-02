@@ -1,6 +1,8 @@
 <template>
+    <div :style="'min-height:'+windowWidth+'px'">
       <component :is="navbarComponent"></component>
       <router-view @login="handleLogin" @logout="handleLogout"/>
+    </div>
 </template>
 
 
@@ -12,6 +14,7 @@ import { useCookies } from 'vue3-cookies';
 const { cookies } = useCookies();
 const user = cookies.get('user');
 const navbarComponent = ref(user ? Navbar : NavbarLogOut);
+const windowWidth = ref(window.innerWidth)
 
 const handleLogin = () => {
     navbarComponent.value = Navbar;

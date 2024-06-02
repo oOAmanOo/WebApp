@@ -13,11 +13,6 @@ import UserView from "@/views/UserView.vue";
 const { cookies } = useCookies();
 const routes = [
   {
-    path: '/',
-    name: 'index',
-    component: IndexPage
-  },
-  {
     path: '/books',
     name: 'books',
     component: BooksView
@@ -43,7 +38,7 @@ const routes = [
     component: PurchaseList
   },
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     component: Home
   },

@@ -15,28 +15,28 @@
                     <span style="font-size: 15px" :class="'badge rounded-pill '+(windowHeight > 550?'inline-block  mb-2 mx-5 ':'')+''+(bookData['status'] == 'Available'?'bg-success':'bg-danger')">{{ bookData['status']}}</span>
                 </div>
                 <div>
-                    <input type="number" class="form-control w-25 inline-block" v-model="cart_amount" @change="priceCompute">
+                    <input type="number" :class="'form-control w-25 inline-block '+(bookData['status'] == 'Available'?'':'disabled')" v-model="cart_amount" @change="priceCompute">
                     <input type="text" disabled class="form-control ms-2 w-25 inline-block border-0 text-center" :value="total + ' 元'">
-                    <button class="btn btn-warning mx-2 inline-block zh" @click="addToCart">加入購物車</button>
+                    <button :class="'btn mx-2 inline-block zh '+(bookData['status'] == 'Available'?'btn-warning':'disabled btn-secondary')" @click="addToCart">加入購物車</button>
                 </div>
                 
             </div>
         </div>
         <div class="container card border-dark mb-3" :style="'max-width: '+commentWidth+'px' ">
             <div class="zh card-header">讀者評論</div>
-            <div v-if="commentData != null">
+            <div v-if="commentData">
                 <div v-for="(commentkey, index) in Object.keys(commentData)"
                      :class="'bg-white '+((index == Object.keys(commentData).length-1)?'card-body':'card-header')">
                     <div :class="'inline-block '+(index == (Object.keys(commentData).length-1)?'pt-1':'pt-3')">
                         <img v-for="(star) in rating" 
-                             :src="require('../assets/star'+(star <= commentData[commentkey]['rating']?'':'_empty')+'.png')"
+                             :src="require('../assets/star'+(star <= commentData[commentkey][0]?'':'_empty')+'.png')"
                              :style="'height: '+ starHeight+'px'" class="p-0" alt="">
                     </div>
-                    <p class="card-text pt-2">{{commentData[commentkey]['comment']}}</p>
+                    <p class="card-text pt-2">{{commentData[commentkey][1]}}</p>
                     <h4 class="card-title " style="text-align: right">- {{ commentkey }}</h4>
                 </div>
             </div>
-            <div v-if="commentData.value == undefined">
+            <div v-if="!commentData">
                 <div class="'bg-white card-body">
                     <p class="card-text text-danger">No one has evercomment yet. Buy one to comment!</p>
                 </div>
@@ -50,7 +50,6 @@
 import {onMounted, ref, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import { useCookies } from 'vue3-cookies';
-import bookData_json from '../assets/test_bookData.json'
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -62,7 +61,7 @@ const commentWidth = ref(window.innerWidth * 0.8)
 const starHeight = ref(window.innerHeight /24)
 // get data
 const route = useRoute()
-const bookId = route.query.bookId
+const bookId = route.query.bookID
 const bookData = ref(null)
 const commentData = ref(null)
 const rating = [1, 2, 3, 4, 5]
@@ -70,24 +69,23 @@ const cart_amount = ref(0)
 const total = ref(0)
 // get cookies data
 const { cookies } = useCookies();
-const user = cookies.get('user');
-const account = user.account
-const password = user.password
+let account = null
+let password = null
+
 
 const getBookData = async () => {
     try {
         let getProduct = await axios.get('http://localhost:3000/product/' + bookId)
         let data = JSON.parse(JSON.stringify(getProduct.data))
-        bookData.value = data.productInfos[0]
         if(data.isSuccess){
-            console.log(bookData.value['amount'])
+            bookData.value = data.productInfos[0]
             if (bookData.value['amount'] > 0) {
                 bookData.value['status'] = 'Available'
             } else {
                 bookData.value['status'] = 'Sold Out'
             }
         }else{
-            console.log('Get Data error!')
+            console.log('Get Book Data error!')
         }
     } catch (e) {
         console.log(e)
@@ -97,8 +95,14 @@ const getCommentData = async () => {
     try {
         let getComment = await axios.get('http://localhost:3000/comment/' + bookId)
         let data = JSON.parse(JSON.stringify(getComment.data))
-        console.log(data.comments)
-        commentData.value = data.comments
+        if(data.isSuccess && Object.keys(data.comments).length != 0){
+            commentData.value = data.comments
+        }else if(Object.keys(data.comments).length == 0){
+            commentData.value = false
+        }else{
+            console.log('Get Comment Data error!')
+        }
+        console.log(commentData)
     } catch (e) {
         console.log(e)
     }
@@ -118,17 +122,15 @@ const addToCart = () => {
         })
         return
     }
-    let product_json = JSON.stringify({
+    
+    axios.post('http://localhost:3000/cart/change/'+account, {
         password: password,
         products: [
             {
-                id: bookData.value['id'],
-                amount: cart_amount.value
+                "id": bookData.value['id'],
+                "amount": cart_amount.value
             }
         ]
-    })
-    axios.post('http://localhost:3000/cart/change/'+account, {
-        product_json
     }).then((response) => {
         let cartData = JSON.parse(JSON.stringify(response.data))
         if (cartData.isSuccess) {
@@ -151,7 +153,7 @@ const addToCart = () => {
             }else{
                 Swal.fire({
                     icon: 'error',
-                    title: 'cartData.cause',
+                    title: cartData.cause,
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -173,6 +175,14 @@ onMounted(() => {
         commentWidth.value = window.innerWidth * 0.8
         starHeight.value = window.innerHeight / 12 / 3
     })
+    
+    if(cookies.get('user') == null){
+        account = 'no login'
+        password = 'no login'
+    }else{
+        account = cookies.get('user').account
+        password = cookies.get('user').password
+    }
     getBookData();
     getCommentData();
 })

@@ -31,7 +31,6 @@ export default {
       try {
         event.preventDefault();
         const hashP = this.hashPassword(this.password);
-        console.log("hashp in login"+hashP)
         await this.login(this.account, hashP)
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -55,7 +54,7 @@ export default {
         // store user in cookies
         const user = { account:account,password:result.password, personalInfos: result.personalInfos};
         this.$cookies.set('user', user);
-        this.$router.push('/home')
+        this.$router.push('/')
         this.$emit('login'); // emit event to App.vue
       }else{
         alert('帳號或密碼錯誤');

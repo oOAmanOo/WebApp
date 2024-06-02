@@ -41,7 +41,7 @@ delete personalInfos["phonenum"];
 
 const logout = () => {
     cookies.remove('user');
-    router.push('/home');
+    router.push('/');
     emit('logout'); // emit event to App.vue
 }
 </script>
