@@ -6,21 +6,20 @@
         <div class="row justify-content-start">
             <div class="avatar col-sm-6">
                 <div class="card">
-  <h3 class="card-header">ME</h3>
-  <img :src="require('../assets/avatar.png')" alt="Dinosaur Icon" class="profile-img"/>
+                    <h3 class="card-header">ME</h3>
+                     <img :src="require('../assets/avatar.png')" alt="Dinosaur Icon" class="profile-img"/>
                 </div>
             </div>
             <div class="info col-sm-6 my-5 px-5 ">
                 <div v-if="personalInfos">
-      <div  v-for="(value, key) in personalInfos" :key="key" class="d-flex align-items-center mb-2">
-            <h2 class="mx-2 mb-0">{{ key }}:</h2>
-            <p class="mb-0">{{ value }}</p>
-      </div>
-    </div>
-    <p v-else>No user information available.</p>
-    <button type="button" class="btn btn-danger my-5" @click="logout">Log out</button> 
-            </div>
-            
+                    <div  v-for="(value, key) in personalInfos" :key="key" class="d-flex align-items-center mb-2"> 
+                        <h2 class="mx-2 mb-0">{{ key }}:</h2>
+                        <p class="mb-0">{{ value }}</p>
+                    </div>
+                </div>
+                <p v-else>No user information available.</p>
+                <button type="button" class="btn btn-danger my-5" @click="logout">Log out</button> 
+            </div> 
         </div>
     </div>
 
@@ -35,6 +34,10 @@ const account = cookies.get('user').account;
 const password = cookies.get('user').password;
 const personalInfos = cookies.get('user').personalInfos;
 const emit = defineEmits(['logout'])
+
+// modify the key "phonenum" to "phone number"
+personalInfos["phone number"] = personalInfos["phonenum"];
+delete personalInfos["phonenum"];
 
 const logout = () => {
     cookies.remove('user');
