@@ -39,8 +39,10 @@
 </template>
 
 <script setup>
-    import { ref } from "vue";
+import {onMounted, ref, watch} from "vue";
     import axios from "axios";
+    import { useCookies } from "vue3-cookies";
+    const { cookies } = useCookies();
     const imgH = ref(window.innerHeight - 200);
     const imgW = ref(window.innerWidth / 12 * 2);
 
@@ -70,6 +72,7 @@
         }
         
     }
+    
 </script>
 
 <style>

@@ -1,7 +1,7 @@
 <template>
     <!-- <template v-if="user != null"> -->
     <template v-if="user != null">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center mt-5">
             <div class="col-sm-10">
                 <table class="table table-hover">
                     <thead>
