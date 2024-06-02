@@ -135,7 +135,6 @@ export default {
           return;
         }else{
           const hashP = this.hashPassword(this.password) 
-          console.log("hashp in signup"+hashP)
           await this.signup(this.account, hashP, this.username, this.email, this.phonenum, this.address)
           
           //this.signup(this.account, this.password, this.username, this.email, this.phonenum, this.address)
